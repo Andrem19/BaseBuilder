@@ -7,9 +7,9 @@ namespace Mainrocess
     {
         public static async Task Main()
         {
+            await ExtractZip.Extract();
+            await Builder.BuildBase();
             await Check.Checkdata();
-            //await Builder.BuildBase();
-
         }
     }
 }

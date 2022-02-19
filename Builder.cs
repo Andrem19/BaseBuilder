@@ -7,28 +7,30 @@ namespace BaseBuilder
     {
         public static async Task BuildBase()
         {
-            List<string> directories = new List<string>();
-            directories = GetDir.GetDirs();
+            //List<string> directories = new List<string>();
+            //directories = GetDir.GetDirs();
             List<string> file = new List<string>();
             List<DataModel> dataModels = new List<DataModel>();
-            for (int i = 0; i < directories.Count-1; i++)
+            file = Directory.GetFiles(Variables.addressToSave).ToList();
+            for (int i = 0; i <= file.Count-1; i++)
             {
-                file = GetDir.GetFiles(directories[i]);
-                dataModels = await ReadCSV.readData(file[0], false);
-                for (int j = 0; j < dataModels.Count; j++)
+                dataModels = await ReadCSV.readData(file[i], true);
+                using (StreamWriter sw = File.AppendText($"{Variables.addressToSave}\\{Variables.interval}{Variables.symbol}.csv"))
                 {
-                    Variables.FullDataSet.Add(dataModels[i]);
+                    for (int j = 0; j < dataModels.Count - 1; j++)
+                    {
+                        var line = string.Format($"{dataModels[j].open_time}, {dataModels[j].open}, {dataModels[j].high}, {dataModels[j].low}, {dataModels[j].close}, {dataModels[j].volume}, {dataModels[j].close_time}");
+                        sw.WriteLine(line);
+                        sw.Flush();
+                    }
+                }
+                if (dataModels.Count > 0)
+                {
+                    File.Delete(file[i]);
+                    Console.WriteLine($"{file[i]} was added");
                 }
             }
-            using (var w = new StreamWriter($"{Variables.addressToSave}\\{Variables.interval}{Variables.symbol}.csv"))
-            {
-                for (int i = 0; i < Variables.FullDataSet.Count-1; i++)
-                {
-                    var line = string.Format($"{Variables.FullDataSet[i].open_time}, {Variables.FullDataSet[i].open}, {Variables.FullDataSet[i].high}, {Variables.FullDataSet[i].low}, {Variables.FullDataSet[i].close}, {Variables.FullDataSet[i].volume}, {Variables.FullDataSet[i].close_time}");
-                    w.WriteLine(line);
-                    w.Flush();
-                }
-            }
+            
         }
     }
 }

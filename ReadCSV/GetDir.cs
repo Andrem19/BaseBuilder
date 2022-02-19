@@ -12,7 +12,7 @@ namespace BaseBuilder
         {
             List<string> dirs = new List<string>();
             Variables.Dirs = dirs;
-            return Directory.GetDirectories(Variables.baseAddress).ToList();
+            return Directory.GetDirectories(Variables.addressToSave).ToList();
         }
         public static List<string> GetFiles(string path)
         {
